@@ -7,7 +7,7 @@ router.post(serverConfig.routes.user.Register, async (req, res) => {
   try {
     res.json(await UserService.register(req.body));
   } catch (err) {
-    res.status(serverConfig.errors.statusCode).send(err);
+    res.status(500).send(err);
   }
 });
 
@@ -15,7 +15,7 @@ router.post(serverConfig.routes.user.Login, async (req, res) => {
   try {
     res.json(await UserService.login(req.body));
   } catch (err) {
-    res.status(serverConfig.errors.statusCode).send(err);
+    res.status(500).send(err);
   }
 });
 

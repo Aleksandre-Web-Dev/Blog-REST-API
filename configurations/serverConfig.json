@@ -1,0 +1,23 @@
+{
+  "errors": {
+    "alreadyExist": "Data Already Exists",
+    "invalidUser": "User not found",
+    "invalidPassword": "Password is invalid"
+  },
+
+  "routes": {
+    "user": {
+      "baseUrl": "/users",
+      "Register": "/register",
+      "Login": "/login"
+    },
+    "post": {
+      "baseUrl": "/posts",
+      "getAll": "/getAllPosts",
+      "create": "/createPost",
+      "delete": "/deletePost",
+      "getById": "/getById",
+      "update": "/updatePost"
+    }
+  }
+}

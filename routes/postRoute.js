@@ -7,7 +7,7 @@ router.post(serverConfig.routes.post.create, async (req, res) => {
   try {
     res.json(await PostService.create(req.body));
   } catch (err) {
-    res.status(serverConfig.errors.statusCode).send(err);
+    res.status(500).send(err);
   }
 });
 
@@ -15,7 +15,7 @@ router.get(serverConfig.routes.post.getAll, async (req, res) => {
   try {
     res.json(await PostService.getAllPosts());
   } catch (err) {
-    res.status(serverConfig.errors.statusCode).send(err);
+    res.status(500).send(err);
   }
 });
 
@@ -23,7 +23,7 @@ router.get(`${serverConfig.routes.post.getById}/:id`, async (req, res) => {
   try {
     res.json(await PostService.getById(req.params.id));
   } catch (err) {
-    res.status(serverConfig.errors.statusCode).send(err);
+    res.status(500).send(err);
   }
 });
 
@@ -35,7 +35,7 @@ router.patch(serverConfig.routes.post.update, async (req, res) => {
   try {
     res.json(await PostService.update(req.body));
   } catch (err) {
-    res.status(serverConfig.errors.statusCode).send(err);
+    res.status(500).send(err);
   }
 });
 

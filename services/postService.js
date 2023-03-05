@@ -52,7 +52,8 @@ class PostService {
     if (post.length == 0) {
       throw "Post Does not Exist";
     } else {
-      return post;
+      console.log(typeof post)
+      return post[0];
     }
   }
 

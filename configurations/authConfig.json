@@ -1,0 +1,4 @@
+{
+  "passwordLength": 10,
+  "tokenExpiryTime": "1h"
+}
