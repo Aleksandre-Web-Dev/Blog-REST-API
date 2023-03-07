@@ -1,4 +1,4 @@
 {
-  "passwordLength": 10,
+  "saltLength": 10,
   "tokenExpiryTime": "1h"
 }

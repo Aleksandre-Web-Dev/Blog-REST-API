@@ -1,38 +1,27 @@
 const serverConfig = require("../configurations/serverConfig.json");
-const DatabaseService = require("./dbService");
+const QueryService = require("../services/queryService");
 
 class PostService {
   constructor() {}
 
-  async create(post) {
-    const [isPresent] = await DatabaseService.query(
-      "SELECT title FROM Posts WHERE title = ?",
-      [post.title],
-      (err, result) => {
-        console.log(result);
-      }
-    );
+  async create({ title, author, content, tags, creation_date }) {
+    const [isPresent] = await QueryService.getPostByTitle(title);
     if (!isPresent) {
-      await DatabaseService.query(
-        "INSERT INTO Posts(title,author,content,creation_date) VALUES (?,?,?,?)",
-        [post.title, post.author, post.content, post.creation_date],
-        (err, result) => {
-          console.log(result);
+      const tagArray = tags;
+      tagArray.forEach(async (element) => {
+        const [isTagPresent] = await QueryService.getTagByName(element);
+        if (!isTagPresent) {
+          await QueryService.addTag(element);
         }
-      );
+      });
+      await QueryService.addPost(title, author, content, tags, creation_date);
     } else {
       throw serverConfig.errors.alreadyExist;
     }
   }
 
   async getAll() {
-    const posts = await DatabaseService.query(
-      "SELECT * FROM Posts",
-      null,
-      (err, result) => {
-        console.log(result);
-      }
-    );
+    const posts = await QueryService.getAllPosts();
     if (!posts.length) {
       throw "Could not get posts";
     } else {
@@ -41,13 +30,7 @@ class PostService {
   }
 
   async getById(id) {
-    const [post] = await DatabaseService.query(
-      "SELECT id,title,author,content,creation_date FROM Posts WHERE id = ?",
-      [id],
-      (err, result) => {
-        console.log(result);
-      }
-    );
+    const [post] = await QueryService.getPostById(id);
     if (!post) {
       throw "Post Does not Exist";
     } else {
@@ -55,35 +38,17 @@ class PostService {
     }
   }
 
-  async delete(id) {
-    await DatabaseService.query(
-      "DELETE FROM Posts WHERE id = ?",
-      [id],
-      (err, result) => {
-        console.log(result);
-      }
-    );
-  }
-
-  async update(post) {
-    const [isPresent] = await DatabaseService.query(
-      "SELECT id FROM Posts WHERE id = ?",
-      [post.id],
-      (err, result) => {
-        console.log(result);
-      }
-    );
+  async update({ title, author, content, tag, id }) {
+    const [isPresent] = await QueryService.getPostById(id);
     if (!isPresent) {
       throw "Post Does not exist";
     } else {
-      await DatabaseService.query(
-        "UPDATE Posts SET title=?,author=?,content=? WHERE id = ?",
-        [post.title, post.author, post.content, post.id],
-        (err, result) => {
-          console.log(result);
-        }
-      );
+      await QueryService.updatePost(title, author, content, tag, id);
     }
+  }
+
+  async delete(id) {
+    await QueryService.deletePost(id);
   }
 }
 
