@@ -13,7 +13,7 @@ router.post(serverConfig.routes.post.create, async (req, res) => {
 
 router.get(serverConfig.routes.post.getAll, async (req, res) => {
   try {
-    res.json(await PostService.getAllPosts());
+    res.json(await PostService.getAll());
   } catch (err) {
     res.status(500).send(err);
   }

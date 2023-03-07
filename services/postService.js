@@ -5,15 +5,14 @@ class PostService {
   constructor() {}
 
   async create(post) {
-    const isExist = await DatabaseService.query(
-      "SELECT title FROM POSTS WHERE title = ?",
+    const [isPresent] = await DatabaseService.query(
+      "SELECT title FROM Posts WHERE title = ?",
       [post.title],
       (err, result) => {
         console.log(result);
       }
     );
-    console.log(isExist.length);
-    if (isExist.length == 0) {
+    if (!isPresent) {
       await DatabaseService.query(
         "INSERT INTO Posts(title,author,content,creation_date) VALUES (?,?,?,?)",
         [post.title, post.author, post.content, post.creation_date],
@@ -26,7 +25,7 @@ class PostService {
     }
   }
 
-  async getAllPosts() {
+  async getAll() {
     const posts = await DatabaseService.query(
       "SELECT * FROM Posts",
       null,
@@ -34,26 +33,25 @@ class PostService {
         console.log(result);
       }
     );
-    if (posts.length !== 0) {
-      return posts;
-    } else {
+    if (!posts.length) {
       throw "Could not get posts";
+    } else {
+      return posts;
     }
   }
 
   async getById(id) {
-    const post = await DatabaseService.query(
+    const [post] = await DatabaseService.query(
       "SELECT id,title,author,content,creation_date FROM Posts WHERE id = ?",
       [id],
       (err, result) => {
         console.log(result);
       }
     );
-    if (post.length == 0) {
+    if (!post) {
       throw "Post Does not Exist";
     } else {
-      console.log(typeof post)
-      return post[0];
+      return post;
     }
   }
 
@@ -68,15 +66,14 @@ class PostService {
   }
 
   async update(post) {
-    console.log(post);
-    const isExist = await DatabaseService.query(
+    const [isPresent] = await DatabaseService.query(
       "SELECT id FROM Posts WHERE id = ?",
       [post.id],
       (err, result) => {
         console.log(result);
       }
     );
-    if (isExist.length == 0) {
+    if (!isPresent) {
       throw "Post Does not exist";
     } else {
       await DatabaseService.query(

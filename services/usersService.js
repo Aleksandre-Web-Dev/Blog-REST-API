@@ -9,14 +9,14 @@ class UserService {
   constructor() {}
 
   async register(user) {
-    const isExist = await DatabaseService.query(
+    const [isPresent] = await DatabaseService.query(
       "SELECT username FROM User WHERE username = ?",
       [user.email],
       (err, result) => {
         console.log(result);
       }
     );
-    if (isExist.length == 0) {
+    if (!isPresent) {
       const password = await bcrypt.hash(
         user.password,
         authConfig.passwordLength
@@ -34,22 +34,22 @@ class UserService {
   }
 
   async login(user) {
-    const isExist = await DatabaseService.query(
+    const [isPresent] = await DatabaseService.query(
       "SELECT username FROM User WHERE username = ?",
       [user.email],
       (err, result) => {
         console.log(result);
       }
     );
-    if (isExist.length !== 0) {
-      const [userPassword] = await DatabaseService.query(
+    if (isPresent) {
+      const [storedPassword] = await DatabaseService.query(
         "SELECT password FROM User WHERE username = ?",
         [user.email],
         (err, result) => {
           console.log(result);
         }
       );
-      if (await bcrypt.compare(user.password, userPassword.password)) {
+      if (await bcrypt.compare(user.password, storedPassword.password)) {
         return jwt.sign({ user: user }, process.env.SECRET_KEY, {
           expiresIn: authConfig.tokenExpiryTime,
         });
